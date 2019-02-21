@@ -20,6 +20,7 @@ class UserResource(Resource):
             parser = reqparse.RequestParser()
             parser.add_argument('p', type=int, location='args', default=1)
             parser.add_argument('rp', type=int, location='args', default=5)
+            parser.add_argument('user_type', location='args')
             parser.add_argument('name', location='args')
             args = parser.parse_args()
             rumus_offset = args['p'] * args['rp'] - args['rp']
@@ -27,6 +28,10 @@ class UserResource(Resource):
             if args['name'] is not None:
                 # qry = qry.filter_by(name=args['name']) #qry that is filtered by name >> for exact name
                 qry = qry.filter(Users.name.like("%"+args['name']+"%")) #for name with this name, and not case sensitive
+            if args['user_type'] is not None:
+                qry = qry.filter_by(name=args['user_type']) #qry that is filtered by name >> for exact name
+                # qry = qry.filter(Users.name.like("%"+args['name']+"%")) #for name with this name, and not case sensitive
+
             rows = []
             for row in qry.limit(args['rp']).offset(rumus_offset).all():
                 rows.append(marshal(row, Users.response_field))
@@ -45,22 +50,39 @@ class UserResource(Resource):
             # if ret != None:
                 # return ret, 200, {'Content-Type': 'application/json'}   
             return {'status': 'ID NOT_FOUND'}, 404, {'Content-Type': 'application/json'}
-    @jwt_required #to make with authorization
+    # @jwt_required #to make with authorization
+    
+    
     def post(self):
         parser = reqparse.RequestParser()
-        # parser.add_argument('id', location='json', type=int, required=True)
+        parser.add_argument('user_type', location='args')
         parser.add_argument('name', location='json')
-        parser.add_argument('age', location='json', type=int)
-        parser.add_argument('sex', location='json')
-        parser.add_argument('client_id', location='json', type=int)
-        # parser.add_argument('client_id', location='json', type=int)
+        parser.add_argument('password', location='json')
         args = parser.parse_args() #this becomes str_serialized
-        
-        user_new = Users(None, args['name'], args['age'], args['sex'], args['client_id'])
+        if args['user_type'] is None:
+            args['user_type'] = 'publik'
+            user_new = Users(None, args['user_type'], args['name'], args['password'])
+        user_new = Users(None, args['user_type'], args['name'], args['password'])
         db.session.add(user_new) #insert the input data into the database
         db.session.commit() #commit ga ad argument
         return marshal(user_new, Users.response_field)
-        # return self.user.add(args), 200, {'Content-Type': 'application/json'}
+    
+    
+    
+    # def post(self):
+    #     parser = reqparse.RequestParser()
+    #     parser.add_argument('user_type', location='args')
+    #     parser.add_argument('name', location='json')
+    #     parser.add_argument('password', location='json')
+    #     args = parser.parse_args() #this becomes str_serialized
+    #     if user_type is None:
+    #         args['user_type'] = 'publik'
+    #         user_new = Users(None, args['user_type'], args['name'], args['password'])
+    #     user_new = Users(None, args['user_type'], args['name'], args['password'])
+    #     db.session.add(user_new) #insert the input data into the database
+    #     db.session.commit() #commit ga ad argument
+    #     return marshal(user_new, Users.response_field)
+    #     # return self.user.add(args), 200, {'Content-Type': 'application/json'}
 
         #another way
         # user = User()
@@ -70,27 +92,27 @@ class UserResource(Resource):
         # user.sex = args['sex']
         # # user.client_id = args['client_id']
         # return self.user.add(user.serialize()), 200, {'Content-Type': 'application/json'}
-    @jwt_required
+    # @jwt_required
     def put(self, id):
         parser = reqparse.RequestParser()
-        parser.add_argument('id', location='json', type=int, required=True)
+        # parser.add_argument('id', location='json', type=int, required=True)
         parser.add_argument('name', location='json')
-        parser.add_argument('age', location='json', type=int)
-        parser.add_argument('sex', location='json')
-        parser.add_argument('client_id', location='json', type=int)
+        parser.add_argument('password', location='json')
+        # parser.add_argument('sex', location='json')
+        # parser.add_argument('client_id', location='json', type=int)
         args = parser.parse_args()
         qry_user = Users.query.get(id)
         if qry_user is not None:
-            qry_user.id = args['id']
+            # qry_user.id = args['id']
             qry_user.name = args['name']
-            qry_user.age = args['age']
-            qry_user.sex = args['sex']
-            qry_user.client_id = args['client_id']
+            qry_user.password = args['password']
+            # qry_user.sex = args['sex']
+            # qry_user.client_id = args['client_id']
             db.session.commit()
             return marshal(qry_user, Users.response_field), 200, {'Content-Type': 'application/json'}
         return 'Data is not found'
         # return self.user.edit_one(id, args), 200, {'Content-Type': 'application/json'}
-    @jwt_required   
+    # @jwt_required   
     def delete(self, id):
         qry_del = Users.query.get(id)
         if qry_del is not None:

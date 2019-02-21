@@ -1,0 +1,136 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Project-Zomato",
+		"_postman_id": "a5bdc02d-dcb3-0db2-7c7b-f140c2da9d8d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"url": "{{url}}/user",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Edit user",
+					"request": {
+						"url": {
+							"raw": "{{url}}/user/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"4"
+							],
+							"query": [
+								{
+									"key": "user_type",
+									"value": "admin",
+									"equals": true,
+									"description": "",
+									"disabled": true
+								}
+							],
+							"variable": []
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Anggo\",\n\t\"password\" : \"anggoGanteng\"\n\t\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Post user",
+					"request": {
+						"url": "{{url}}/user",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Dian Rahma\",\n\t\"password\" : \"WatiCantik\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Token",
+			"description": "",
+			"item": [
+				{
+					"name": "Create token admin",
+					"request": {
+						"url": {
+							"raw": "{{url}}/auth?user_type=admin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth"
+							],
+							"query": [
+								{
+									"key": "user_type",
+									"value": "admin",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "user_type",
+								"value": "admin",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"fatma\",\n\t\"password\" : \"tomato\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

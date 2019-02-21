@@ -15,11 +15,11 @@ app = Flask(__name__)
 api = Api(app, catch_all_404s=True)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@0.0.0.0:3306/rest_training'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'SFsieaaBsLEpecP675r243faM8oSB2hV'
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1) #bestpractice expiry is 1 hour
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['JWT_SECRET_KEY'] = 'SFsieaaBsLEpecP675r243faM8oSB2hV'
+#app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1) #bestpractice expiry is 1 hour
 
 jwt = JWTManager(app)
 
@@ -51,6 +51,8 @@ def after_request(response):
 # from .auth.__init__ import bp_auth
 # from blueprints.rent.resources import bp_rent
 from blueprints.semua.resources import bp_semua
+from blueprints.makanan.resources import bp_makanan
+from blueprints.rating.resources import bp_rating
 
 
 # app.register_blueprint(bp_user, url_prefix='/user')
@@ -59,6 +61,10 @@ from blueprints.semua.resources import bp_semua
 # app.register_blueprint(bp_auth, url_prefix='/auth')
 # app.register_blueprint(bp_rent, url_prefix='/rent')
 app.register_blueprint(bp_semua, url_prefix='/semua')
+
+app.register_blueprint(bp_makanan, url_prefix='/makanan')
+
+app.register_blueprint(bp_rating, url_prefix='/rating')
 
 
 db.create_all()

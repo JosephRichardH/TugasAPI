@@ -9,7 +9,7 @@ bp_user = Blueprint('user', __name__)
 api = Api(bp_user)
 
 #using multi route in one class
-class CuisineResource(Resource): 
+class CuisineResource(Resource):
     # user = Users()
     
     def __init__(self):

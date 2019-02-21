@@ -5,8 +5,8 @@ from . import *
 from blueprints import db
 from flask_jwt_extended import jwt_required
 
-bp_user = Blueprint('user', __name__)
-api = Api(bp_user)
+bp_makanan = Blueprint('makanan', __name__)
+api = Api(bp_makanan)
 
 #using multi route in one class
 class CuisineResource(Resource):

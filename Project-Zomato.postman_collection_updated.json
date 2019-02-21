@@ -1,0 +1,238 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Project-Zomato",
+		"_postman_id": "a5bdc02d-dcb3-0db2-7c7b-f140c2da9d8d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"url": {
+							"raw": "{{url}}/user?p=1&rp=50",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "p",
+									"value": "1",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "rp",
+									"value": "50",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Edit user",
+					"request": {
+						"url": {
+							"raw": "{{url}}/user/4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"4"
+							],
+							"query": [
+								{
+									"key": "user_type",
+									"value": "admin",
+									"equals": true,
+									"description": "",
+									"disabled": true
+								}
+							],
+							"variable": []
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Anggo\",\n\t\"password\" : \"anggoGanteng\"\n\t\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Post user",
+					"request": {
+						"url": "{{url}}/user",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Izzah Aulia W.\",\n\t\"password\" : \"AzzamImut\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Token",
+			"description": "",
+			"item": [
+				{
+					"name": "Create token admin",
+					"request": {
+						"url": {
+							"raw": "{{url}}/auth?user_type=admin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth"
+							],
+							"query": [
+								{
+									"key": "user_type",
+									"value": "admin",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "user_type",
+								"value": "admin",
+								"description": "",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"fatma\",\n\t\"password\" : \"tomato\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create token public user",
+					"request": {
+						"url": "{{url}}/auth",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\" : \"Dian Rahma\",\n\t\"password\" : \"WatiCantik\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restaurants",
+			"description": "",
+			"item": [
+				{
+					"name": "Get all resto",
+					"request": {
+						"url": "{{url}}/semua",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"description": "",
+			"item": [
+				{
+					"name": "Post ulasan baru",
+					"request": {
+						"url": "{{url}}/ulasan",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1NTA3Nzc3MDIsIm5iZiI6MTU1MDc3NzcwMiwianRpIjoiMmI0ZmFlOGItNTEzMC00YTdhLWI1MzgtZDUwOTRhZjBhODRkIiwiZXhwIjoxNTUwODY0MTAyLCJpZGVudGl0eSI6eyJpZCI6MTIsInVzZXJfdHlwZSI6InB1YmxpayIsIm5hbWUiOiJEaWFuIFJhaG1hIiwicGFzc3dvcmQiOiJXYXRpQ2FudGlrIn0sImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsInVzZXJfY2xhaW1zIjp7ImlkIjoxMiwidXNlcl90eXBlIjoicHVibGlrIiwibmFtZSI6IkRpYW4gUmFobWEiLCJwYXNzd29yZCI6IldhdGlDYW50aWsifX0.3ig6Y-ZQ3Gr9KJSI4UiRY7zI2W6uNhSwlSPhEDgRfZQ",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nama restaurant\" : \"nippon - kan\",\n\t\"bintang\" : 3.5,\n\t\"ulasan\" : \"Lumayan enak sih menurut gw, terutama sushi nya. Sayang nya harga nya terlalu mahal yah buat kualitas yang masih biasa aja gitu. Sorry\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Edit ulasan",
+					"request": {
+						"url": "{{url}}/review",
+						"method": "PUT",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

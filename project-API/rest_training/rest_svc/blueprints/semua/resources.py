@@ -43,7 +43,25 @@ class Semua(Resource):
                 }
             }
             data.append(x)
-
         return data
-        
+         
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', location='json')
+        parser.add_argument('nama', location='json')
+        parser.add_argument('harga', location='json')
+        parser.add_argument('lokasi', location='json')
+        parser.add_argument('makanan', location='json')
+        parser.add_argument('rating', location='json')
+        parser.add_argument('ulasan', location='json')
+        args = parser.parse_args() #this becomes str_serialized
+        # if args['user_type'] is None:
+        #     args['user_type'] = 'publik'
+        #     user_new = Users(None, args['user_type'], args['name'], args['password'])
+        resto_new = Restos(args['id'], args['nama'], args['harga'], args['lokasi'], args['makanan'], args['rating'], args['ulasan'])
+        db.session.add(user_new) #insert the input data into the database
+        db.session.commit() #commit ga ad argument
+        return marshal(user_new, Users.response_field)
+   
+
 api.add_resource(Semua, '')

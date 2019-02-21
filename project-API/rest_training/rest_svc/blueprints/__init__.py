@@ -51,6 +51,7 @@ def after_request(response):
 from .user.resources import bp_user #import bp_person from folder blueprints, user and file resources.py
 from .auth.__init__ import bp_auth
 from blueprints.semua.resources import bp_semua
+from .ulasan.resources import bp_review
 
 
 
@@ -61,7 +62,7 @@ from blueprints.semua.resources import bp_semua
 # app.register_blueprint(bp_rent, url_prefix='/rent')
 app.register_blueprint(bp_semua, url_prefix='/semua')
 
-
+app.register_blueprint(bp_review, url_prefix='/ulasan')
 app.register_blueprint(bp_user, url_prefix='/user')
 app.register_blueprint(bp_auth, url_prefix='/auth')
 

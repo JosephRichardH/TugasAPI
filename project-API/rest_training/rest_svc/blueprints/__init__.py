@@ -52,19 +52,16 @@ from .user.resources import bp_user #import bp_person from folder blueprints, us
 from .auth.__init__ import bp_auth
 from blueprints.semua.resources import bp_semua
 from .ulasan.resources import bp_review
+from blueprints.harga.resources import bp_harga
+from blueprints.daerah.resources import bp_daerah
 
 
-
-# app.register_blueprint(bp_user, url_prefix='/user')
-# app.register_blueprint(bp_client, url_prefix='/client')
-# app.register_blueprint(bp_book, url_prefix='/book')
-# app.register_blueprint(bp_auth, url_prefix='/auth')
-# app.register_blueprint(bp_rent, url_prefix='/rent')
 app.register_blueprint(bp_semua, url_prefix='/semua')
-
 app.register_blueprint(bp_review, url_prefix='/ulasan')
 app.register_blueprint(bp_user, url_prefix='/user')
 app.register_blueprint(bp_auth, url_prefix='/auth')
+app.register_blueprint(bp_harga, url_prefix='/harga')
+app.register_blueprint(bp_daerah, url_prefix='/daerah')
 
 db.create_all()
 

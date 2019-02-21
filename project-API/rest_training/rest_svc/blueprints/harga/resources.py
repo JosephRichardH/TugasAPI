@@ -1,32 +1,26 @@
 import requests, json
 from flask import Blueprint
 from flask_restful import Resource, Api, reqparse, marshal
-######
-from blueprints import db
-from . import * #ambil init.py
-###
 from flask_jwt_extended import jwt_required
+from blueprints import *
 
-###S
 
-bp_semua = Blueprint('semua', __name__)
-api = Api(bp_semua) #daftar ke Api
+bp_harga = Blueprint('harga', __name__)
+api = Api(bp_harga) #daftar ke Api
 
-class Semua(Resource):
+class Harga(Resource):
     zomato_host = 'https://developers.zomato.com/api/v2.1'
     zomato_apikey = '4b63ea47d29600228a3baf3785b91b3b'
 
     # @jwt_required
     def get(self):
-        # parser = reqparse.RequestParser()
-        # parser.add_argument('user-key', location='args', default=None)
-        # args = parser.parse_args()
 
         rq = requests.get(self.zomato_host + '/search', headers={'user-key': self.zomato_apikey}, params={'q':'jakarta'})
         zom = rq.json()
         data = []
+
         for i in range (int(zom['results_shown'])):
-            x={
+            x = {
                 'id': zom['restaurants'][i]['restaurant']['id'],
                 'nama': zom['restaurants'][i]['restaurant']['name'],
                 'lokasi': {
@@ -43,25 +37,22 @@ class Semua(Resource):
                 }
             }
             data.append(x)
-        return data
-         
-    # def post(self):
-    #     parser = reqparse.RequestParser()
-    #     parser.add_argument('id', location='json')
-    #     parser.add_argument('nama', location='json')
-    #     parser.add_argument('harga', location='json')
-    #     parser.add_argument('lokasi', location='json')
-    #     parser.add_argument('makanan', location='json')
-    #     parser.add_argument('rating', location='json')
-    #     parser.add_argument('ulasan', location='json')
-    #     args = parser.parse_args() #this becomes str_serialized
-    #     # if args['user_type'] is None:
-    #     #     args['user_type'] = 'publik'
-    #     #     user_new = Users(None, args['user_type'], args['name'], args['password'])
-    #     resto_new = Restos(args['id'], args['nama'], args['harga'], args['lokasi'], args['makanan'], args['rating'], args['ulasan'])
-    #     db.session.add(user_new) #insert the input data into the database
-    #     db.session.commit() #commit ga ad argument
-    #     return marshal(user_new, Users.response_field)
-   
+            
+        parser = reqparse.RequestParser()
+        
+        parser.add_argument('maks_harga', location='args', type=int, default=1)
+        
+        args=parser.parse_args()
+        
+        rows = []
 
-api.add_resource(Semua, '')
+        for i in range(len(data)):
+            if data[i]['perkiraan_harga_2orang'] <= args['maks_harga']:
+                rows.append(data[i])
+        if rows == []:
+            return "Restoran tidak ditemukan", 200, {'Content-Type': 'application/json'}
+        return rows, 200, { 'Content-Type': 'application/json' }
+        
+        # return data
+
+api.add_resource(Harga, '')

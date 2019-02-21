@@ -15,7 +15,9 @@ app = Flask(__name__)
 api = Api(app, catch_all_404s=True)
 
 
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@0.0.0.0:3306/rest_zomato'
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'SFsieaaBsLEpecP675r243faM8oSB2hV'
@@ -45,27 +47,23 @@ def after_request(response):
     return response
 
 #call blueprint
-from .user.resources import bp_user #import bp_person from folder blueprints, user and file resources.py
-# from .client.resources import bp_client
-# from .book.resources import bp_book
-from .auth.__init__ import bp_auth
-# from blueprints.rent.resources import bp_rent
 
-db.create_all()
+from .user.resources import bp_user #import bp_person from folder blueprints, user and file resources.py
+from .auth.__init__ import bp_auth
+from blueprints.semua.resources import bp_semua
+
+
+
+# app.register_blueprint(bp_user, url_prefix='/user')
+# app.register_blueprint(bp_client, url_prefix='/client')
+# app.register_blueprint(bp_book, url_prefix='/book')
+# app.register_blueprint(bp_auth, url_prefix='/auth')
+# app.register_blueprint(bp_rent, url_prefix='/rent')
+app.register_blueprint(bp_semua, url_prefix='/semua')
 
 
 app.register_blueprint(bp_user, url_prefix='/user')
-# app.register_blueprint(bp_client, url_prefix='/client')
-# app.register_blueprint(bp_book, url_prefix='/book')
 app.register_blueprint(bp_auth, url_prefix='/auth')
-# app.register_blueprint(bp_rent, url_prefix='/rent')
 
-#bisa tambah url prefix: app.register_blueprint(bp_person, url_prefix='/user') recommended to put here
+db.create_all()
 
-# __init__.py
-
-# resources.py
-
-# @app.route('/')
-# def index():
-#     return '<h1>Hi, this is me</h1>'

@@ -4,42 +4,80 @@ from flask_restful import Api, Resource, reqparse, marshal
 from . import *
 from blueprints import db
 from flask_jwt_extended import jwt_required
+import requests
+from blueprints.semua import *
 
 bp_makanan = Blueprint('makanan', __name__)
 api = Api(bp_makanan)
 
 #using multi route in one class
-class CuisineResource(Resource): 
+class CuisineResource(Resource):
     # user = Users()
+    zomato_host = 'https://developers.zomato.com/api/v2.1'
+    zomato_apikey = '4b63ea47d29600228a3baf3785b91b3b'
     
     def __init__(self):
         pass
         
-    def get(self, id=None):
-        if id is None:
-            parser = reqparse.RequestParser()
-            parser.add_argument('p', type=int, location='args', default=1)
-            parser.add_argument('rp', type=int, location='args', default=5)
-            parser.add_argument('cuisine', location='args')
-            args = parser.parse_args()
-            rumus_offset = args['p'] * args['rp'] - args['rp']
-            qry = Users.query
-            if args['name'] is not None:
-                # qry = qry.filter_by(name=args['name']) #qry that is filtered by name >> for exact name
-                qry = qry.filter(Cuisines.cuisine.like("%"+args['cuisine']+"%")) #for name with this name, and not case sensitive
-            rows = []
-            for row in qry.limit(args['rp']).offset(rumus_offset).all():
-                rows.append(marshal(row, Cuisines.response_field))
-            return rows, 200, {'Content-Type': 'application/json'}
-        else:
-            qry = Cuisines.query.get(id) #select * from where id = id
-            if qry != None:
-                return marshal(qry, Cuisines.response_field), 200, {'Content-Type': 'application/json'}
+    def get(self):
+        rq = requests.get(self.zomato_host + '/search', headers={'user-key': self.zomato_apikey}, params={'q':'jakarta'})
+        zom = rq.json()
+        data = []
+        for i in range (int(zom['results_shown'])):
+            x={
+                'id': zom['restaurants'][i]['restaurant']['id'],
+                'nama': zom['restaurants'][i]['restaurant']['name'],
+                'lokasi': {
+                    'alamat': zom['restaurants'][i]['restaurant']['location']['address'],
+                    'daerah': zom['restaurants'][i]['restaurant']['location']['locality'],
+                    'kota': zom['restaurants'][i]['restaurant']['location']['city']
+                },
+                'masakan': zom['restaurants'][i]['restaurant']['cuisines'],
+                'perkiraan_harga_2orang': zom['restaurants'][i]['restaurant']['average_cost_for_two'],
+                'mata_uang': zom['restaurants'][i]['restaurant']['currency'],
+                'rating': {
+                    'bintang': zom['restaurants'][i]['restaurant']['user_rating']['aggregate_rating'],
+                    'ulasan': zom['restaurants'][i]['restaurant']['user_rating']['rating_text']
+                }
+            }
+            data.append(x)
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('p', type=int, location='args', default=1)
+        parser.add_argument('rp', type=int, location='args', default=5)
+        parser.add_argument('cuisine', location='args')
+        args = parser.parse_args()
+        # makanan = marshal(args, Cuisines.response_field)
+        #qry = Cuisines.query
+#
+        hasil = []
+        for x in data:
+            if args['cuisine'] in x['masakan']:
+                hasil.append(x)
+        if hasil == [] :
+            return None
+        return hasil, 200, {'Content-Type': 'application/json'}
+#
+#            rumus_offset = args['p'] * args['rp'] - args['rp']
+#            qry = Cuisines.query
+#            rq = requests.get(data + '/search', headers={'user-key': self.zomato_apikey}, params={'q':cuisine})
+#            zom = rq.json()
+#            if args['cuisine'] is not None:
+#                # qry = qry.filter_by(name=args['name']) #qry that is filtered by name >> for exact name
+#                qry = qry.filter(Cuisines.cuisine.like("%"+args['cuisine']+"%")) #for name with this name, and not case sensitive
+#            rows = []
+#            for row in qry.limit(args['rp']).offset(rumus_offset).all():
+#                rows.append(marshal(row, Cuisines.response_field))
+#            return rows, 200, {'Content-Type': 'application/json'}
+    #    else:
+    #        qry = Cuisines.query.get(id) #select * from where id = id
+    #        if qry != None:
+    #            return marshal(qry, Cuisines.response_field), 200, {'Content-Type': 'application/json'}
                 # marshal is converting data from query into the response_field
             # ret = self.user.get_by_id(id)
             # if ret != None:
                 # return ret, 200, {'Content-Type': 'application/json'}   
-            return {'status': 'ID NOT_FOUND'}, 404, {'Content-Type': 'application/json'}
+    #        return {'status': 'ID NOT_FOUND'}, 404, {'Content-Type': 'application/json'}
 #    @jwt_required #to make with authorization
 #    def post(self):
 #        parser = reqparse.RequestParser()
@@ -104,5 +142,5 @@ class CuisineResource(Resource):
 #
 ##other example:
 ##bp_person = Blueprint('user', __name__, url_prefix='/user')
-api.add_resource(CuisineResource, '', '/<int:id>')
+api.add_resource(CuisineResource, '', '/makanan')
 ##example above is same with api.add_resource(UserResource, '/user', '/user/<int:id>') without url_prefix

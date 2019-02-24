@@ -39,7 +39,50 @@ class ReviewResource(Resource):
             }
             data.append(x)
         return data
-            
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('p', type=int, location='args', default=1)
+        parser.add_argument('rp', type=int, location='args', default=5)
+        parser.add_argument('nama restaurant', location='args')
+        parser.add_argument('bintang', location='args')
+        parser.add_argument('ulasan', location='args')
+        parser.add_argument('post_by', location='args')
+        args = parser.parse_args()
+        rumus_offset = args['p'] * args['rp'] - args['rp']
+        qry = Reviews.query
+        if args['nama restaurant'] is not None:
+            # qry = qry.filter_by(name=args['name']) #qry that is filtered by name >> for exact name
+            qry = qry.filter(Reviews.nama_restaurant.like("%"+args['nama restaurant']+"%")) #for name with this name, and not case sensitive
+        if args['bintang'] is not None:
+            qry = qry.filter_by(bintang=args['bintang']) #qry that is filtered by name >> for exact name
+            # qry = qry.filter(Reviews.name.like("%"+args['name']+"%")) #for name with this name, and not case sensitive
+        if args['ulasan'] is not None:
+            # qry = qry.filter_by(name=args['name']) #qry that is filtered by name >> for exact name
+            qry = qry.filter(Reviews.ulasan.like("%"+args['ulasan']+"%"))
+        if args['post_by'] is not None:
+            # qry = qry.filter_by(post_by=args['post_by'])
+            qry = qry.filter(Reviews.post_by.like("%"+args['post_by']+"%"))
+        rows = []
+        for row in qry.limit(args['rp']).offset(rumus_offset).all():
+            rows.append(marshal(row, Reviews.response_field))
+        # if rows == []:
+        #     return 'Data tidak ditemukan', 200, {'Content-Type': 'application/json'} 
+        # return rows
+       
+    #     else:
+    #         qry = Reviews.query.get(id) #select * from where id = id
+    #         if qry != None:
+    #             return marshal(qry, Users.response_field), 200, {'Content-Type': 'application/json'}
+    #             # marshal is converting data from query into the response_field
+    #         # ret = self.user.get_by_id(id)
+    #         # if ret != None:
+    #             # return ret, 200, {'Content-Type': 'application/json'}   
+    #         return {'status': 'ID NOT_FOUND'}, 404, {'Content-Type': 'application/json'}
+    # # @jwt_required #to make with authorization
+    
+
+
     @jwt_required
     def post(self):
         data = self.get_restos()
@@ -66,7 +109,7 @@ class ReviewResource(Resource):
                 break
         if resto is None:
             return 'Restaurant dengan nama tersebut tidak ditemukan', 200, {'Content-Type': 'application/json'} 
-        return ulasan_new, 200, {'Content-Type': 'application/json'}
+        return marshal(ulasan_new, Reviews.response_field), 200, {'Content-Type': 'application/json'}
     
     @jwt_required
     def put(self):
@@ -91,7 +134,7 @@ class ReviewResource(Resource):
                 break
         if resto is None:
             return 'Restaurant dengan nama tersebut tidak ditemukan', 200, {'Content-Type': 'application/json'} 
-        return ulasan_update, 200, {'Content-Type': 'application/json'}
+        return marshal(ulasan_update, Reviews.response_field), 200, {'Content-Type': 'application/json'}
     
     @jwt_required   
     def delete(self, id):

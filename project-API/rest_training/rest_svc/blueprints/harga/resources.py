@@ -20,6 +20,8 @@ class Harga(Resource):
         data = []
 
         for i in range (int(zom['results_shown'])):
+            # harga = int(zom['restaurants'][i]['restaurant']['average_cost_for_two'])
+            # harga = "{:,}".format(harga)
             x = {
                 'id': zom['restaurants'][i]['restaurant']['id'],
                 'nama': zom['restaurants'][i]['restaurant']['name'],

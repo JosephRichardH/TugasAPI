@@ -47,7 +47,7 @@ class Daerah(Resource):
         rows = []
 
         for i in range(len(data)):
-            if  args['dimana'] in data[i]['lokasi']['daerah']:
+            if  args['dimana'].lower() in data[i]['lokasi']['daerah'].lower():
                 rows.append(data[i])
         if rows == []:
             return "Restoran tidak ditemukan", 200, {'Content-Type': 'application/json'}

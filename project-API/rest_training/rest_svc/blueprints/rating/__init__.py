@@ -3,8 +3,8 @@ from blueprints import db
 from flask_restful import fields
 
 
-class Budgets(db.Model):
-    __tablename__ = "budget"
+class Ratings(db.Model):
+    __tablename__ = "rating"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255))
     location = db.Column(db.String(255))
@@ -36,4 +36,4 @@ class Budgets(db.Model):
         self.user_rating = user_rating
 
     def __repr__(self): #initiate table model
-        return '<budget %r>' % self.id #the __repr__ must have a string type as return
+        return '<makanan %r>' % self.id #the __repr__ must have a string type as return

@@ -7,11 +7,11 @@ from flask_jwt_extended import jwt_required
 import requests
 from blueprints.semua import *
 
-bp_budget = Blueprint('budget', __name__)
-api = Api(bp_budget)
+bp_masakan = Blueprint('masakan', __name__)
+api = Api(bp_masakan)
 
 #using multi route in one class
-class BudgetResource(Resource):
+class MasakanResource(Resource):
     # user = Users()
     zomato_host = 'https://developers.zomato.com/api/v2.1'
     zomato_apikey = '4b63ea47d29600228a3baf3785b91b3b'
@@ -41,17 +41,18 @@ class BudgetResource(Resource):
                 }
             }
             data.append(x)
-
         parser = reqparse.RequestParser()
         parser.add_argument('p', type=int, location='args', default=1)
         parser.add_argument('rp', type=int, location='args', default=5)
-        parser.add_argument('budget_total', type=float, location='args')
-        parser.add_argument('jumlah_orang', type=int, location='args')
+        parser.add_argument('masakan', location='args')
         args = parser.parse_args()
-        harga_per_orang_input=args['budget_total']/args['jumlah_orang']
+
+        # makanan = marshal(args, Cuisines.response_field)
+        #qry = Cuisines.query
+#
         hasil = []
         for x in data:
-            if float(harga_per_orang_input) >= float(x['perkiraan_harga_2orang']/2):
+            if args['masakan'].lower() in x['masakan'].lower():
                 hasil.append(x)
         if hasil == [] :
             return None
@@ -141,5 +142,5 @@ class BudgetResource(Resource):
 #
 ##other example:
 ##bp_person = Blueprint('user', __name__, url_prefix='/user')
-api.add_resource(BudgetResource, '', '/budget')
+api.add_resource(MasakanResource, '')
 ##example above is same with api.add_resource(UserResource, '/user', '/user/<int:id>') without url_prefix
